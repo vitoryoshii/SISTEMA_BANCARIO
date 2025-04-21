@@ -38,22 +38,34 @@ while True:
 
                 if valor_saque <= LIMITE_SAQUE_DINEHIRO: # Verifica limite por saque.
                     saldo -= valor_saque 
+                    numero_saque += 1 # ADD saque efetuado
 
                     #inclui saque no extrato
-                    extrato += f"Saque: {valor_saque:.2f}"
+                    extrato += f"Saque: {valor_saque:.2f}/n"
+
                     print(f"Saque efetuado com sucesso!. Saldo: {saldo}")
 
-                    numero_saque += 1 # ADD saque efetuado   
                 else:
                     print(f"Não realizado o saque. Valor: R$ {valor_saque:.2f} maior que o límite diário R$ {LIMITE_SAQUE_DINEHIRO:.2f}.")
         else:
             print("Excedeu o números de saque diário!")
             
     elif option == 1: # Depositar
+        print("DEPOSITO")
 
+        valor_deposito = float(input("Digite o valor para depositar: "))
+
+        # Verifica se o valor a depositar e maior que zero
+        
+        if valor_deposito > 0:
+            saldo += valor_deposito
+            extrato += f"DEPOSITO: R$ {valor_deposito:.2f}/n"
+            print("Deposito efetuado com sucesso!")
+        else:
+            print("Opção falhou! Valor informado é inválido. ")
 
  #   elif option == 2: # Extrato 
-    print("\n================ EXTRATO ================")
+    #print("\n================ EXTRATO ================")
 
     elif option == 3: # Sair
        break
