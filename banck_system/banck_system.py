@@ -41,7 +41,7 @@ while True:
                     numero_saque += 1 # ADD saque efetuado
 
                     #inclui saque no extrato
-                    extrato += f"Saque: {valor_saque:.2f}/n"
+                    extrato += f"Saque: {valor_saque:.2f}\n"
 
                     print(f"Saque efetuado com sucesso!. Saldo: {saldo}")
 
@@ -56,16 +56,19 @@ while True:
         valor_deposito = float(input("Digite o valor para depositar: "))
 
         # Verifica se o valor a depositar e maior que zero
-        
+
         if valor_deposito > 0:
             saldo += valor_deposito
-            extrato += f"DEPOSITO: R$ {valor_deposito:.2f}/n"
+            extrato += f"DEPOSITO: R$ {valor_deposito:.2f}\n"
             print("Deposito efetuado com sucesso!")
         else:
             print("Opção falhou! Valor informado é inválido. ")
 
- #   elif option == 2: # Extrato 
-    #print("\n================ EXTRATO ================")
+    elif option == 2: # Extrato 
+        print("\n================ EXTRATO ================")
+        print("Não foram realizado movimentações." if not extrato else extrato)
+        print(f"\n SALDO: R$ {saldo:.2f}")
+        print("\n=========================================")
 
     elif option == 3: # Sair
        break
