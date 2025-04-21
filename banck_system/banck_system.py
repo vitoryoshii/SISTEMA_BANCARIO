@@ -40,12 +40,7 @@ while True:
                     saldo -= valor_saque 
 
                     #inclui saque no extrato
-                    extrato += f""" 
-
-                        Saque
-                        -R$ {valor_saque:.2f}
-
-                    """
+                    extrato += f"Saque: {valor_saque:.2f}"
                     print(f"Saque efetuado com sucesso!. Saldo: {saldo}")
 
                     numero_saque += 1 # ADD saque efetuado   
@@ -54,9 +49,11 @@ while True:
         else:
             print("Excedeu o números de saque diário!")
             
- #   elif option == 1: # Depositar
+    elif option == 1: # Depositar
+
 
  #   elif option == 2: # Extrato 
+    print("\n================ EXTRATO ================")
 
     elif option == 3: # Sair
        break
