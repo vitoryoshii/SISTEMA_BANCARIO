@@ -1,13 +1,14 @@
 # menu estatico do sistema bancario
 
 MENU = '''
-    MENU
+========MENU========
 
 [0] SACAR
 [1] DEPOSITAR
 [2] EXTRATO
 [3] SAIR
 
+====================
 '''
 
 # VARIAVEIS GLOBAIS ESTATICAS
@@ -17,7 +18,7 @@ LIMITE_SAQUE_DIARIO = 3
 
 # VARIAVEIS GLOBAIS
 
-saldo = 1000
+saldo = 0
 extrato = ""
 numero_saque = 0
 
@@ -37,14 +38,16 @@ while True:
             else:  
 
                 if valor_saque <= LIMITE_SAQUE_DINEHIRO: # Verifica limite por saque.
-                    saldo -= valor_saque 
-                    numero_saque += 1 # ADD saque efetuado
+                    if valor_saque > 0: 
+                        saldo -= valor_saque 
+                        numero_saque += 1 # ADD saque efetuado
 
-                    #inclui saque no extrato
-                    extrato += f"Saque: {valor_saque:.2f}\n"
+                        #inclui saque no extrato
+                        extrato += f"SAQUE: {valor_saque:.2f}\n"
 
-                    print(f"Saque efetuado com sucesso!. Saldo: {saldo}")
-
+                        print(f"Saque efetuado com sucesso!. Saldo: {saldo}")
+                    else:
+                        print("Valor inválido!")
                 else:
                     print(f"Não realizado o saque. Valor: R$ {valor_saque:.2f} maior que o límite diário R$ {LIMITE_SAQUE_DINEHIRO:.2f}.")
         else:
@@ -67,7 +70,7 @@ while True:
     elif option == 2: # Extrato 
         print("\n================ EXTRATO ================")
         print("Não foram realizado movimentações." if not extrato else extrato)
-        print(f"\n SALDO: R$ {saldo:.2f}")
+        print(f"\nSALDO: R$ {saldo:.2f}")
         print("\n=========================================")
 
     elif option == 3: # Sair
