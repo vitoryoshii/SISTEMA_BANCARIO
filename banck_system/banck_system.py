@@ -1,17 +1,4 @@
-# menu estatico do sistema bancario
-
-MENU = '''
-========MENU========
-
-[0] SACAR
-[1] DEPOSITAR
-[2] EXTRATO
-[3] SAIR
-
-====================
-'''
-
-# VARIAVEIS GLOBAIS ESTATICAS
+# VARIAVEIS ESTATICAS
 
 LIMITE_SAQUE_DINEHIRO = 500
 LIMITE_SAQUE_DIARIO = 3
@@ -22,58 +9,98 @@ saldo = 0
 extrato = ""
 numero_saque = 0
 
-# Exibe menu e captura a opção desejada
+# Função exibe menu
+def menu():
+    
+    return '''
+    ========MENU========
+
+    [0] SACAR
+    [1] DEPOSITAR
+    [2] EXTRATO
+    [3] SAIR
+
+    ====================
+    '''
+
+# Função Sacar 
+def sacar():
+
+    global saldo, extrato, numero_saque
+
+    print("SACAR")
+    valor_saque = float(input("Informe o valor a SACAR: "))
+
+    excedeu_saldo = valor_saque > saldo
+
+    excedeu_limite = valor_saque >  LIMITE_SAQUE_DINEHIRO
+
+    excedeu_saques = numero_saque >= LIMITE_SAQUE_DIARIO
+
+    if excedeu_saques: # Verifica limite diário de saque.
+        print("Excedeu o números de saque diário!")
+    elif excedeu_saldo:
+        print("Não será possível sacar o valor. Falta de saldo.")
+    elif excedeu_limite:
+        print(f"Não realizado o saque. Valor: R$ {valor_saque:.2f} maior que o límite diário R$ {LIMITE_SAQUE_DINEHIRO:.2f}.")
+    elif valor_saque > 0:
+        saldo -= valor_saque 
+        numero_saque += 1 # ADD saque efetuado
+
+        #inclui saque no extrato
+        extrato += f"SAQUE: {valor_saque:.2f}\n"
+
+        print(f"Saque efetuado com sucesso!. Saldo: {saldo}")
+    else:
+        print("Valor inválido!")
+
+# Função Depositar
+def depositar():
+
+    global saldo, extrato
+
+    print("DEPOSITO")
+    valor_deposito = float(input("Digite o valor para depositar: "))
+
+    # Verifica se o valor a depositar e maior que zero
+
+    if valor_deposito > 0:
+        saldo += valor_deposito
+        extrato += f"DEPOSITO: R$ {valor_deposito:.2f}\n"
+        print("Deposito efetuado com sucesso!")
+    else:
+        print("Opção falhou! Valor informado é inválido. ")
+
+# Função exibir extrato
+def exibir_extrato():
+
+    global extrato, saldo
+
+    print("\n================ EXTRATO ================")
+    print("Não foram realizado movimentações." if not extrato else extrato)
+    print(f"\nSALDO: R$ {saldo:.2f}")
+    print("\n=========================================")
+
+# Chama Função resposável por cada interação do user
 
 while True:
-    option = int(input(MENU))
+
+    option = int(input(menu()))
 
     if option == 0: # Sacar
-        print("SACAR")
 
-        if numero_saque < LIMITE_SAQUE_DIARIO: # Verifica limite diário de saque.
-            valor_saque = float(input("Informe o valor a SACAR: "))
+        sacar()
 
-            if valor_saque > saldo: # Saldo sulficiente.
-                print("Não será possível sacar o valor. Falta de saldo.")
-            else:  
-
-                if valor_saque <= LIMITE_SAQUE_DINEHIRO: # Verifica limite por saque.
-                    if valor_saque > 0: 
-                        saldo -= valor_saque 
-                        numero_saque += 1 # ADD saque efetuado
-
-                        #inclui saque no extrato
-                        extrato += f"SAQUE: {valor_saque:.2f}\n"
-
-                        print(f"Saque efetuado com sucesso!. Saldo: {saldo}")
-                    else:
-                        print("Valor inválido!")
-                else:
-                    print(f"Não realizado o saque. Valor: R$ {valor_saque:.2f} maior que o límite diário R$ {LIMITE_SAQUE_DINEHIRO:.2f}.")
-        else:
-            print("Excedeu o números de saque diário!")
-            
     elif option == 1: # Depositar
-        print("DEPOSITO")
-
-        valor_deposito = float(input("Digite o valor para depositar: "))
-
-        # Verifica se o valor a depositar e maior que zero
-
-        if valor_deposito > 0:
-            saldo += valor_deposito
-            extrato += f"DEPOSITO: R$ {valor_deposito:.2f}\n"
-            print("Deposito efetuado com sucesso!")
-        else:
-            print("Opção falhou! Valor informado é inválido. ")
-
+        
+        depositar()
+        
     elif option == 2: # Extrato 
-        print("\n================ EXTRATO ================")
-        print("Não foram realizado movimentações." if not extrato else extrato)
-        print(f"\nSALDO: R$ {saldo:.2f}")
-        print("\n=========================================")
+        
+        exibir_extrato() 
 
     elif option == 3: # Sair
+       
        break
 
     else:
