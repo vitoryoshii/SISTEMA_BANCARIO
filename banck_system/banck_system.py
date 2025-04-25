@@ -24,25 +24,18 @@ def menu():
     '''
 
 # Função Sacar 
-def sacar():
-
-    global saldo, extrato, numero_saque
-
-    print("SACAR")
-    valor_saque = float(input("Informe o valor a SACAR: "))
+def sacar(*, saldo, valor_saque, extrato, numero_saque, limite_saque, limite_saldo):
 
     excedeu_saldo = valor_saque > saldo
-
-    excedeu_limite = valor_saque >  LIMITE_SAQUE_DINEHIRO
-
-    excedeu_saques = numero_saque >= LIMITE_SAQUE_DIARIO
+    excedeu_limite = valor_saque > limite_saldo
+    excedeu_saques = numero_saque >= limite_saque
 
     if excedeu_saques: # Verifica limite diário de saque.
-        print("Excedeu o números de saque diário!")
+        print("\n@@@ Operação falhou! Número máximo de saques excedido. @@@")
     elif excedeu_saldo:
-        print("Não será possível sacar o valor. Falta de saldo.")
+        print("\n@@@ Operação falhou! Você não tem saldo suficiente. @@@")
     elif excedeu_limite:
-        print(f"Não realizado o saque. Valor: R$ {valor_saque:.2f} maior que o límite diário R$ {LIMITE_SAQUE_DINEHIRO:.2f}.")
+        print("f\n@@@ Operação falhou! O valor do saque excede o limite. @@@")
     elif valor_saque > 0:
         saldo -= valor_saque 
         numero_saque += 1 # ADD saque efetuado
@@ -50,9 +43,11 @@ def sacar():
         #inclui saque no extrato
         extrato += f"SAQUE: {valor_saque:.2f}\n"
 
-        print(f"Saque efetuado com sucesso!. Saldo: {saldo}")
+        print("\n=== Saque realizado com sucesso! ===")
     else:
-        print("Valor inválido!")
+        print("\n@@@ Operação falhou! O valor informado é inválido. @@@")
+
+    return saldo, extrato 
 
 # Função Depositar
 def depositar():
@@ -89,7 +84,17 @@ while True:
 
     if option == 0: # Sacar
 
-        sacar()
+        print("SACAR")
+        valor_saque = float(input("Digite o valor para sacar: "))
+
+        saldo, extrato = sacar(
+            saldo=saldo,
+            valor_saque=valor_saque,
+            extrato=extrato,
+            numero_saque=numero_saque,
+            limite_saque=LIMITE_SAQUE_DIARIO,
+            limite_saldo=LIMITE_SAQUE_DINEHIRO
+        )
 
     elif option == 1: # Depositar
         
