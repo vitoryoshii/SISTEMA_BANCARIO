@@ -1,18 +1,5 @@
 import textwrap
-# VARIAVEIS ESTATICAS
 
-LIMITE_SAQUE_DINEHIRO = 500
-LIMITE_SAQUE_DIARIO = 3
-AGENCIA = "0001"
-
-# VARIAVEIS GLOBAIS
-
-saldo = 0
-extrato = ""
-numero_saque = 0
-
-usuarios = []
-contas = []
 
 # Função exibe menu
 def menu():
@@ -55,7 +42,7 @@ def sacar(*, saldo, valor_saque, extrato, numero_saque, limite_saque, limite_sal
 
     if excedeu_saques: # Verifica limite diário de saque.
         print("\n@@@ Operação falhou! Número máximo de saques excedido. @@@")
-    elif excedeu_saldo:
+    elif excedeu_saldo: 
         print("\n@@@ Operação falhou! Você não tem saldo suficiente. @@@")
     elif excedeu_limite:
         print("f\n@@@ Operação falhou! O valor do saque excede o limite. @@@")
@@ -76,7 +63,7 @@ def sacar(*, saldo, valor_saque, extrato, numero_saque, limite_saque, limite_sal
 def exibir_extrato(saldo, /, *, extrato):
 
     print("\n================ EXTRATO ================")
-    print("Não foram realizado movimentações." if not extrato else extrato)
+    print("Não foram realizado movimentações." if not extrato else extrato) 
     print(f"\nSALDO: R$ {saldo:.2f}")
     print("\n=========================================")
 
@@ -84,8 +71,8 @@ def exibir_extrato(saldo, /, *, extrato):
 def criar_usuario(usuarios):
 
     cpf = input("Digite o CPF (apenas números): ")
-    usuario = filtro_usuarios(cpf, usuarios)
-    if usuario:
+    usuario = filtro_usuarios(cpf, usuarios) # Verifica se o usuário já existe
+    if usuario: # Se o usuário já existe, não cria outro
         print("Usuário já cadastrado.")
         return
     
@@ -93,6 +80,7 @@ def criar_usuario(usuarios):
     data_nascimento = input("Digite sua data de nascimento (dd-mm-aaaa): ")
     endereco = input("Digite seu endereço (Logradouro, número - bairro - cidadde/UF): ")
 
+    # Adiciona o novo usuário na lista de usuários
     usuarios.append({
         "cpf" : cpf,
         "nome" : nome,
@@ -125,7 +113,7 @@ def listar_contas(contas):
             C/C:\t\t{conta['conta']}
             Titular:\t{conta['usuario']['nome']}
         '''
-        print("=" * 20)
+        print("=" * 50)
         print(textwrap.dedent(linha_agencia))
 
 def listar_usuarios(usuarios):
@@ -135,69 +123,86 @@ def listar_usuarios(usuarios):
             CPF:\t\t{usuario['cpf']}
             Data Nascimento:\t{usuario['data_nascimento']}
         '''
-        print("=" * 20)
+        print("=" * 50)
         print(textwrap.dedent(linha_usuario))
 
-# Chama Função resposável por cada interação do user
+def main(): # Main function
 
-while True:
+    # VARIAVEIS ESTATICAS
+    LIMITE_SAQUE_DINEHIRO = 500
+    LIMITE_SAQUE_DIARIO = 3
+    AGENCIA = "0001"
 
-    option = menu()
+    # VARIAVEIS 
+    saldo = 0
+    extrato = ""
+    numero_saque = 0
 
-    if option == 0: # DEPOSITAR
+    # LISTAS/DICIONARIOS
+    usuarios = []
+    contas = []
 
-        print("DEPOSITO")
-        valor_user = float(input("Digite o valor para depositar: "))
 
-        saldo, extrato = depositar(saldo, extrato, valor_user)
+    while True:
 
-    elif option == 1: # SACAR
+        option = menu()
 
-        print("SACAR")
-        valor_user = float(input("Digite o valor para sacar: "))
+        if option == 0: # DEPOSITAR
 
-        saldo, extrato = sacar(
-            saldo=saldo,
-            valor_saque=valor_user,
-            extrato=extrato,
-            numero_saque=numero_saque,
-            limite_saque=LIMITE_SAQUE_DIARIO,
-            limite_saldo=LIMITE_SAQUE_DINEHIRO
-        )
+            print("DEPOSITO")
+            valor_user = float(input("Digite o valor para depositar: "))
 
-    elif option == 2: # Extrato 
+            saldo, extrato = depositar(saldo, extrato, valor_user)
+
+        elif option == 1: # SACAR
+
+            print("SACAR")
+            valor_user = float(input("Digite o valor para sacar: "))
+
+            saldo, extrato = sacar(
+                saldo=saldo,
+                valor_saque=valor_user,
+                extrato=extrato,
+                numero_saque=numero_saque,
+                limite_saque=LIMITE_SAQUE_DIARIO,
+                limite_saldo=LIMITE_SAQUE_DINEHIRO
+            )
+
+        elif option == 2: # Extrato 
+            
+            exibir_extrato(saldo, extrato=extrato) 
+
+        elif option == 3: # NOVA CONTA
+
+            print("CRIAR CONTA")
+
+            numero_conta = len(contas) + 1
+            conta = criar_conta(AGENCIA, numero_conta, usuarios)
+
+            if conta:
+                contas.append(conta)
+
+        elif option == 4: # LISTAR CONTAS
+
+            print("LISTAS DE CONTAS")
+            listar_contas(contas)
+
+        elif option == 5: # NOVO USUARIO
+
+            print("CADASTRO DE USUÁRIO")
+            criar_usuario(usuarios)
+
+        elif option == 6: # LISTAR USUÁRIOS
+
+            print("LISTAR USUÁRIOS")
+            listar_usuarios(usuarios)
+
+        elif option == 7: # Sair
         
-        exibir_extrato(saldo, extrato=extrato) 
+            break
 
-    elif option == 3: # NOVA CONTA
-
-        print("CRIAR CONTA")
-
-        numero_conta = len(contas) + 1
-        conta = criar_conta(AGENCIA, numero_conta, usuarios)
-
-        if conta:
-            contas.append(conta)
-
-    elif option == 4: # LISTAR CONTAS
-
-        print("LISTAS DE CONTAS")
-        listar_contas(contas)
-
-    elif option == 5: # NOVO USUARIO
-
-        print("CADASTRO DE USUÁRIO")
-        criar_usuario(usuarios)
-
-    elif option == 6: # LISTAR USUÁRIOS
-
-        print("LISTAR USUÁRIOS")
-        listar_usuarios(usuarios)
-
-    elif option == 7: # Sair
-       
-       break
-
-    else:
-        print("Operação inválida, por favor selecione novamente a operação desejada.")
-    
+        else: # Opção inválida
+            print("\n@@@ Operação falhou! Digite uma opção válida. @@@")
+            
+main() # Chama a função main
+# Fim do código
