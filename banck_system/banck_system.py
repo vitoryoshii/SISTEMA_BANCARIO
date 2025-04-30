@@ -1,10 +1,15 @@
 import textwrap
+from datetime import datetime, timedelta
 
-
+def data_transacao():
+    return datetime.now().strftime("%d-%m-%Y %H:%M")
+    
 # Função exibe menu
 def menu():
+    horario_atual = data_transacao()
     
-    menu = '''
+    menu = f'''
+    ===={horario_atual}====
     ========MENU========
 
     [0]\tDEPOSITAR
@@ -22,11 +27,11 @@ def menu():
 
 # Função Depositar
 def depositar(saldo, extrato, valor_user, /):
-
+    hora_atual = data_transacao()
     # Verifica se o valor a depositar e maior que zero
     if valor_user > 0:
         saldo += valor_user
-        extrato += f"DEPOSITO: R$ {valor_user:.2f}\n"
+        extrato += f"DEPOSITO: R$ {valor_user:.2f} / {hora_atual}\n"
         print("\n=== Depósito realizado com sucesso! ===")
     else:
         print("\n@@@ Operação falhou! O valor informado é inválido. @@@")
@@ -35,6 +40,7 @@ def depositar(saldo, extrato, valor_user, /):
 
 # Função Sacar 
 def sacar(*, saldo, valor_saque, extrato, numero_saque, limite_saque, limite_saldo):
+    hora_atual = data_transacao()
 
     excedeu_saldo = valor_saque > saldo
     excedeu_limite = valor_saque > limite_saldo
@@ -51,8 +57,7 @@ def sacar(*, saldo, valor_saque, extrato, numero_saque, limite_saque, limite_sal
         numero_saque += 1 # ADD saque efetuado
 
         #inclui saque no extrato
-        extrato += f"SAQUE: {valor_saque:.2f}\n"
-
+        extrato += f"SAQUE: {valor_saque:.2f} / {hora_atual}\n"
         print("\n=== Saque realizado com sucesso! ===")
     else:
         print("\n@@@ Operação falhou! O valor informado é inválido. @@@")
