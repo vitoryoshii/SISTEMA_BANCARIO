@@ -1,4 +1,9 @@
-def validarCPF(cpf: str) -> bool:
+from datetime import datetime
+
+def data_hora_atual():
+    return datetime.now().strftime("%d/%m/%Y %H:%M")
+
+def validarCPF(cpf) -> bool:
     cpf = ''.join(filter(str.isdigit, cpf))
 
     if len(cpf) != 11 or cpf == cpf[0] * 11:

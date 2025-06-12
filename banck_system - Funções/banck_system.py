@@ -1,13 +1,21 @@
 import textwrap
-from datetime import datetime, timedelta
+from datetime import datetime
+
+def log_transacao(func):
+    def wrapper(*args, **kwargs):
+        data_hora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        print(f"[{data_hora}] Transação realizada: {func.__name__}")
+        return func(*args, **kwargs)
+    return wrapper
 
 def data_transacao():
-    return datetime.now().strftime("%d-%m-%Y %H:%M")
+    # Retorna a data e hora atual formatada
+    return datetime.now().strftime("%d/%m/%Y %H:%M")
     
 # Função exibe menu
 def menu():
     horario_atual = data_transacao()
-    
+
     menu = f'''
     ===={horario_atual}====
     ========MENU========
@@ -26,6 +34,7 @@ def menu():
     return int(input(textwrap.dedent(menu)))
 
 # Função Depositar
+@log_transacao
 def depositar(saldo, extrato, valor_user, /):
     hora_atual = data_transacao()
     # Verifica se o valor a depositar e maior que zero
@@ -38,7 +47,8 @@ def depositar(saldo, extrato, valor_user, /):
     
     return saldo, extrato
 
-# Função Sacar 
+# Função Sacar
+@log_transacao
 def sacar(*, saldo, valor_saque, extrato, numero_saque, limite_saque, limite_saldo):
     hora_atual = data_transacao()
 

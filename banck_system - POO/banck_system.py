@@ -1,7 +1,7 @@
 import textwrap
 from abc import ABC, abstractclassmethod, abstractproperty
 from datetime import datetime
-from validadorCPF import validarCPF
+from recursosEX import validarCPF, data_hora_atual
 
 # Modelando POO
 
@@ -168,8 +168,8 @@ def menu():
     horario_atual = datetime.now().strftime("%d-%m-%Y %H:%M")
     
     menu = f'''
-    ===={horario_atual}====
-    =========MENU==========
+    ==== {data_hora_atual()} ====
+    ========== MENU ==========
 
     [0]\tDEPOSITAR
     [1]\tSACAR
@@ -180,7 +180,7 @@ def menu():
     [6]\tLISTAR USUÁRIOS
     [7]\tSAIR
 
-    ====================
+    =========================
     '''
     return int(input(textwrap.dedent(menu)))
 
