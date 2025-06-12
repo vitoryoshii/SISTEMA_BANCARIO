@@ -5,10 +5,33 @@ from recursosEX import validarCPF, data_hora_atual
 
 # Modelando POO
 
+class ContasIterator:
+    def __init__(self, contas):
+        self.contas = contas
+        self._indice = 0
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        try:
+            conta = self.contas[self._indice]
+            return f"""
+            Agência:\t{conta.agencia}
+            C/C:\t\t{conta.numero_conta}
+            Titular:\t{conta.usuario}
+            Saldo:\t\tR$ {conta.saldo:.2f}
+        """
+        except IndexError:
+            raise StopIteration
+        finally:
+            self._indice += 1
+
 class Cliente:
     def __init__(self, endereco):
         self.endereco = endereco
         self.contas = []
+        self.indice_conta = 0
 
     def realizar_transacao(self, conta, transacao):
         transacao.registrar(conta)
@@ -126,6 +149,11 @@ class Historico:
             }
         )
 
+    def gerar_relatorio(self, tipo_transacao=None):
+        for transacao in self.transacoes:
+            if tipo_transacao is None or transacao["tipo"].lower() == tipo_transacao.lower():
+                yield transacao
+
 class Transacao(ABC):
     @property
     @abstractproperty
@@ -164,11 +192,18 @@ class Deposito(Transacao):
         if sucesso_transacao:
             numero_conta.historico.adicionar_transacao(self)
 
+def log_transacao(func):
+    def envelope(*args, **kwargs):
+        resultado = func(*args, **kwargs)
+        print(f"{datetime.now().strftime('%d-%m-%Y %H:%M:%S')} {func.__name__.upper()}")
+        return resultado
+    return envelope
+
 def menu():
     horario_atual = datetime.now().strftime("%d-%m-%Y %H:%M")
     
     menu = f'''
-    ==== {data_hora_atual()} ====
+    ==== {horario_atual} ====
     ========== MENU ==========
 
     [0]\tDEPOSITAR
@@ -195,6 +230,7 @@ def recuperar_conta_usuario(usuario):
     
     return usuario.contas[0]
 
+@log_transacao
 def depositar(usuarios):
     cpf = input("Digite o CPF do usuário: ")
     usuario = filtro_usuarios(cpf, usuarios)
@@ -212,6 +248,7 @@ def depositar(usuarios):
     
     usuario.realizar_transacao(conta, transacao)
 
+@log_transacao
 def sacar(usuarios):
     cpf = input("Digite o CPF do usuário: ")
     usuario = filtro_usuarios(cpf, usuarios)
@@ -229,6 +266,7 @@ def sacar(usuarios):
     
     usuario.realizar_transacao(conta, transacao)
 
+@log_transacao
 def exibir_extrato(usuarios):
     cpf = input("Digite o CPF do usuário: ")
     usuario = filtro_usuarios(cpf, usuarios)
@@ -242,19 +280,20 @@ def exibir_extrato(usuarios):
         return
     
     print("\n================ EXTRATO ================")
-    transacoes = conta.historico.transacoes
-
     extrato = ""
-    if not transacoes:
+    tem_transacoes = False
+    for transacao in conta.historico.gerar_relatorio(tipo_transacao="saque"): #colocar tipo_transacao=None para mostrar todas as transações.
+        tem_transacoes = True
+        extrato += f"\n{transacao['tipo']}:\n\tR$ {transacao['valor']:.2f}"
+        extrato += f" - {transacao['data']}"
+    if not tem_transacoes:
         extrato = "Não foram realizadas movimentações."
-    else:
-        for transacao in transacoes:
-            extrato += f"\n{transacao['tipo']}:\n\tR$ {transacao['valor']:.2f} - {transacao['data']}"
-        
-        print(extrato)
-        print(f"\nSALDO: R$ {conta.saldo:.2f}")
-        print("\n=========================================")
 
+    print(extrato)
+    print(f"\nSALDO: R$ {conta.saldo:.2f}")
+    print("\n=========================================")
+
+@log_transacao
 def criar_usuario(usuarios):
     print("=== CADASTRO DE USUÁRIO ===")
     print("=== CPF: 000.000.000-00 ===")
@@ -278,6 +317,7 @@ def criar_usuario(usuarios):
 
     print("=== Usuário criado com sucesso! ===")
 
+@log_transacao
 def criar_conta(numero_conta, usuarios, contas):
     cpf = input("Digite o CPF do usuário: ")
     usuario = filtro_usuarios(cpf, usuarios)
