@@ -35,21 +35,21 @@ def menu():
 
 # Função Depositar
 @log_transacao
-def depositar(saldo, extrato, valor_user, /):
+def depositar(saldo, transacoes, valor_user, /):
     hora_atual = data_transacao()
     # Verifica se o valor a depositar e maior que zero
     if valor_user > 0:
         saldo += valor_user
-        extrato += f"DEPOSITO: R$ {valor_user:.2f} / {hora_atual}\n"
+        transacoes.append({"tipo": "DEPOSITO", "valor": valor_user, "data": hora_atual})
         print("\n=== Depósito realizado com sucesso! ===")
     else:
         print("\n@@@ Operação falhou! O valor informado é inválido. @@@")
     
-    return saldo, extrato
+    return saldo, transacoes
 
 # Função Sacar
 @log_transacao
-def sacar(*, saldo, valor_saque, extrato, numero_saque, limite_saque, limite_saldo):
+def sacar(*, saldo, valor_saque, transacoes, numero_saque, limite_saque, limite_saldo):
     hora_atual = data_transacao()
 
     excedeu_saldo = valor_saque > saldo
@@ -67,21 +67,30 @@ def sacar(*, saldo, valor_saque, extrato, numero_saque, limite_saque, limite_sal
         numero_saque += 1 # ADD saque efetuado
 
         #inclui saque no extrato
-        extrato += f"SAQUE: {valor_saque:.2f} / {hora_atual}\n"
+        transacoes.append({"tipo": "SAQUE", "valor": valor_saque, "data": hora_atual})
         print("\n=== Saque realizado com sucesso! ===")
     else:
         print("\n@@@ Operação falhou! O valor informado é inválido. @@@")
 
-    return saldo, extrato 
+    return saldo, transacoes 
 
 # Função exibir extrato
-def exibir_extrato(saldo, /, *, extrato):
+def exibir_extrato(saldo, transacoes):
 
     print("\n================ EXTRATO ================")
-    print("Não foram realizado movimentações." if not extrato else extrato) 
+    if not transacoes:
+        extrato = "Não foram realizadas movimentações."
+    else:
+        for t in transacoes:
+            print(f"{t['tipo']}: R$ {t['valor']:.2f} / {t['data']}")
+        
     print(f"\nSALDO: R$ {saldo:.2f}")
     print("\n=========================================")
 
+def gerar_relatorio(transacoes, tipo=None):
+    for transacao in transacoes:
+        if tipo is None or transacao["tipo"] == tipo.upper():
+            yield transacao
 # Função criar usuario e filtrar usuarios
 def criar_usuario(usuarios):
 
@@ -156,6 +165,7 @@ def main(): # Main function
     # LISTAS/DICIONARIOS
     usuarios = []
     contas = []
+    transacoes = []
 
 
     while True:
@@ -167,25 +177,25 @@ def main(): # Main function
             print("DEPOSITO")
             valor_user = float(input("Digite o valor para depositar: "))
 
-            saldo, extrato = depositar(saldo, extrato, valor_user)
+            saldo, transacoes = depositar(saldo, transacoes, valor_user)
 
         elif option == 1: # SACAR
 
             print("SACAR")
             valor_user = float(input("Digite o valor para sacar: "))
 
-            saldo, extrato = sacar(
+            saldo, transacoes = sacar(
                 saldo=saldo,
                 valor_saque=valor_user,
-                extrato=extrato,
+                transacoes=transacoes,
                 numero_saque=numero_saque,
                 limite_saque=LIMITE_SAQUE_DIARIO,
                 limite_saldo=LIMITE_SAQUE_DINEHIRO
             )
 
-        elif option == 2: # Extrato 
-            
-            exibir_extrato(saldo, extrato=extrato) 
+        elif option == 2: # Extrato
+
+            exibir_extrato(saldo, transacoes)
 
         elif option == 3: # NOVA CONTA
 
