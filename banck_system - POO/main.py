@@ -1,12 +1,12 @@
 import textwrap
 from sistema_banco.persistencia import carregar_dados_separados, salvar_usuarios_csv, salvar_contas_csv
 from sistema_banco.servicos import depositar, sacar, exibir_extrato, criar_conta, listar_contas, criar_usuario, listar_usuarios
-from sistema_banco.utils import getDataHora
+from sistema_banco.utils import data_hora
 
 def menu():
         menu_texto = f'''
         ==================== MENU =====================
-        ============= {getDataHora()} =============
+        ============= {data_hora()} =============
 
         [1] DEPOSITAR         [5] CRIAR USUÁRIO
         [2] SACAR             [6] LISTAR USUÁRIOS

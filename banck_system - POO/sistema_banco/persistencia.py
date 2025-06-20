@@ -1,5 +1,5 @@
 import csv
-from .models import Pessoa_fisica, ContaCorrente
+from .models import PessoaFisica, ContaCorrente
 from .utils import DADOS_PATH
 
 def carregar_dados_separados(usuarios_arquivo="usuarios.csv", contas_arquivo="contas.csv"):
@@ -12,7 +12,7 @@ def carregar_dados_separados(usuarios_arquivo="usuarios.csv", contas_arquivo="co
         with open(DADOS_PATH / usuarios_arquivo, mode="r", newline='', encoding="utf-8") as arquivo:
             leitor = csv.DictReader(arquivo)
             for linha in leitor:
-                usuario = Pessoa_fisica(
+                usuario = PessoaFisica(
                     nome=linha["nome"],
                     cpf=linha["cpf"],
                     data_nascimento=linha["data_nascimento"],

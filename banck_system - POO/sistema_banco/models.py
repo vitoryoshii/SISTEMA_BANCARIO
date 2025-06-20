@@ -1,5 +1,5 @@
 from abc import ABC, abstractproperty, abstractclassmethod
-from .utils import getDataHora
+from .utils import data_hora
 
 class Cliente:
     def __init__(self, endereco):
@@ -13,7 +13,7 @@ class Cliente:
     def adicionar_conta(self, conta):
         self.contas.append(conta)
 
-class Pessoa_fisica(Cliente):
+class PessoaFisica(Cliente):
     def __init__(self, nome, cpf, data_nascimento, endereco):
         super().__init__(endereco)
         self.nome = nome
@@ -125,7 +125,7 @@ class Historico:
             {
                 "tipo": transacao.__class__.__name__,
                 "valor": transacao.valor,
-                "data": getDataHora()
+                "data": data_hora()
             }
         )
 

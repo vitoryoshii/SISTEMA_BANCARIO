@@ -4,10 +4,10 @@ from datetime import datetime
 PASTA_RAIZ = Path(__file__).resolve().parent.parent
 DADOS_PATH = PASTA_RAIZ / 'dados'
 
-def getDataHora():
+def data_hora():
     return datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
-def getValidaCPF(cpf) -> bool:
+def valida_cpf(cpf) -> bool:
     cpf = ''.join(filter(str.isdigit, cpf))
 
     if len(cpf) != 11 or cpf == cpf[0] * 11:
@@ -26,7 +26,7 @@ def getValidaCPF(cpf) -> bool:
 def log_transacao(func):
     def envelope(*args, **kwargs):
         resultado = func(*args, **kwargs)
-        data_hora = getDataHora()
+        data_hora = data_hora()
 
         with open(DADOS_PATH / 'logTransacao.txt', 'a', encoding='utf-8') as arquivo:
             arquivo.write(

@@ -1,5 +1,5 @@
-from .models import Pessoa_fisica, ContaCorrente, Saque, Deposito, Conta
-from .utils import filtro_usuarios, recuperar_conta_usuario, getValidaCPF, log_transacao
+from .models import PessoaFisica, ContaCorrente, Saque, Deposito
+from .utils import filtro_usuarios, recuperar_conta_usuario, valida_cpf, log_transacao
 
 @log_transacao
 def depositar(usuarios):
@@ -70,7 +70,7 @@ def criar_usuario(usuarios):
     print("=== CPF: 000.000.000-00 ===")
     cpf = input("Digite o CPF (apenas números ou com pontuação): ")
 
-    if not getValidaCPF(cpf):
+    if not valida_cpf(cpf):
         print("\n@@@ CPF inválido! Tente novamente. @@@")
         return
 
@@ -83,7 +83,7 @@ def criar_usuario(usuarios):
     data_nascimento = input("Digite sua data de nascimento (dd-mm-aaaa): ")
     endereco = input("Digite seu endereço (Logradouro, número - bairro - cidade/UF): ")
 
-    cliente = Pessoa_fisica(nome=nome, data_nascimento=data_nascimento, endereco=endereco, cpf=cpf)
+    cliente = PessoaFisica(nome=nome, data_nascimento=data_nascimento, endereco=endereco, cpf=cpf)
     usuarios.append(cliente)
 
     print("=== Usuário criado com sucesso! ===")
