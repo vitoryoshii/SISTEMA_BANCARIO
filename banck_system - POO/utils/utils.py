@@ -2,7 +2,7 @@ from pathlib import Path
 from datetime import datetime
 
 PASTA_RAIZ = Path(__file__).resolve().parent.parent
-DADOS_PATH = PASTA_RAIZ / 'dados'
+DADOS_PATH = PASTA_RAIZ / 'data'
 
 def data_hora():
     return datetime.now().strftime("%d/%m/%Y %H:%M:%S")
@@ -26,11 +26,11 @@ def valida_cpf(cpf) -> bool:
 def log_transacao(func):
     def envelope(*args, **kwargs):
         resultado = func(*args, **kwargs)
-        data_hora = data_hora()
+        dh = data_hora()
 
-        with open(DADOS_PATH / 'logTransacao.txt', 'a', encoding='utf-8') as arquivo:
+        with open(DADOS_PATH / 'logs' / 'logTransacao.txt', 'a', encoding='utf-8') as arquivo:
             arquivo.write(
-                f"[{data_hora}] Função '{func.__name__}' executada com argumentos {args}, e {kwargs}. Retornou {resultado}\n"
+                f"[{dh}] Função '{func.__name__}' executada com argumentos {args}, e {kwargs}. Retornou {resultado}\n"
             )
 
         return resultado
